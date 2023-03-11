@@ -11,6 +11,7 @@ setup(
     package_dir={'hcc_tools': 'src'},
     # Needed for dependencies
     install_requires=[
+        'cc_tools @ git+https://github.com/ChipMcCallahan/CCTools'
     ],
     # *strongly* suggested for sharing
     version='0.1',

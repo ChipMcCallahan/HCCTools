@@ -1,4 +1,4 @@
 ###### Requirements without Version Specifiers ######`
-
+cc_tools@git+https://github.com/ChipMcCallahan/CCTools.git
 
 ###### Requirements with Version Specifiers ######`
