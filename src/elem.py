@@ -1,7 +1,7 @@
-"""Tools for working with HCC files."""
+"""Classes and enums for game elements."""
 # pylint: disable=missing-function-docstring
-# pylint: disable=too-many-public-methods
 # pylint: disable=multiple-statements
+# pylint: disable=too-many-public-methods
 # pylint: disable=missing-class-docstring
 from enum import Enum
 from collections import namedtuple, defaultdict
@@ -30,6 +30,7 @@ class Id(Enum):
     TRAP = 19
     HINT = 20
     CLONER = 21
+    CHIP = 22
     BUTTON = 23
     BOMB = 24
     KEY = 25
@@ -81,7 +82,6 @@ class Rule(Enum):
     UNLIMITED_USE = 10
 
 
-# These string values become the property names of the namedtuple
 class Arg(Enum):
     ID = "id"
     DIRECTION = "direction"
