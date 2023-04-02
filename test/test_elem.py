@@ -2,13 +2,13 @@
 #pylint: disable=no-member
 import unittest
 from src.enums import ElemId, Direction, Rule, Color, Arg
-from src.elem import ElemBuilder
+from src.elem import Elems, ElemBuilder
 
 
 class TestElemBuilder(unittest.TestCase):
     """Tests for ElemBuilder"""
 
-    def test_convenience_methods(self):
+    def test_builder_convenience_methods(self):
         """Test convenience methods on ElemBuilder."""
         b = ElemBuilder()
         for eid in list(ElemId)[1:]:
@@ -33,7 +33,7 @@ class TestElemBuilder(unittest.TestCase):
         self.assertEqual(b.args[Arg.RULE], Rule.OPEN)
         self.assertEqual(b.args[Arg.COLOR], Color.YELLOW)
 
-    def test_build(self):
+    def test_builder_build(self):
         """Tests for building the ElemBuilder object."""
         e = ElemBuilder().floor().n().open().yellow().count(10).index(20).channel(30).build()
         self.assertEqual(e.elemid, ElemId.FLOOR)
@@ -44,8 +44,43 @@ class TestElemBuilder(unittest.TestCase):
         self.assertEqual(e.index, 20)
         self.assertEqual(e.channel, 30)
 
-    def test_from_elem(self):
+    def test_builder_from_elem(self):
         """Tests for creating an ElemBuilder from an existing Elem."""
         elem = ElemBuilder().floor().n().open().yellow().count(10).index(20).channel(30).build()
         builder = ElemBuilder(elem)
         self.assertEqual(elem, builder.build())
+
+
+class TestElems(unittest.TestCase):
+    """Tests for Elems"""
+    def test_factories(self):
+        """Test dynamically added factory methods."""
+        # Every Element gets a factory and builder by name.
+        for eid in list(ElemId)[1:]:
+            elem = getattr(Elems, eid.value)()
+            builder = getattr(Elems, f"{eid.value}_builder")()
+            self.__do_assertions(elem, builder, eid)
+
+        # These elements get factory and builder by name and direction.
+        direction_eids = [ElemId[n] for n in ("PANEL", "FORCE", "CLONER", "ANT", "FIREBALL", "BALL",
+                                              "TANK", "GLIDER", "TEETH", "WALKER", "BLOB",
+                                              "PARAMECIUM", "PLAYER")]
+        for eid in direction_eids:
+            for d in [Direction[char] for char in "NESW"]:
+                elem = getattr(Elems, f"{eid.value}_{d.value}")()
+                builder = getattr(Elems, f"{eid.value}_{d.value}_builder")()
+                self.__do_assertions(elem, builder, eid, direction=d)
+
+        # These elements get factory and builder by name and color.
+        color_eids = [ElemId[n] for n in ("KEY", "DOOR", "BUTTON")]
+        for eid in color_eids:
+            for c in list(Color)[1:]:
+                elem = getattr(Elems, f"{c}_{eid.value}")()
+                builder = getattr(Elems, f"{c}_{eid.value}_builder")()
+                self.__do_assertions(elem, builder, eid, color=c)
+
+    def __do_assertions(self, elem, builder, elemid, *, color=Color.NONE, direction=Direction.NONE):
+        self.assertEqual(elem, builder.build())
+        self.assertEqual(elem.elemid, elemid)
+        self.assertEqual(elem.color, color)
+        self.assertEqual(elem.direction, direction)
