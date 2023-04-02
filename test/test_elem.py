@@ -1,5 +1,5 @@
 """Tests for Elem."""
-#pylint: disable=no-member
+#pylint: disable=no-member, invalid-name
 import unittest
 from src.enums import ElemId, Direction, Rule, Color, Arg
 from src.elem import Elems, ElemBuilder

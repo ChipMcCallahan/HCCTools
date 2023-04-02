@@ -1,4 +1,5 @@
 """Tests for HCC Enums"""
+# pylint: disable=invalid-name
 import enum
 import unittest
 
@@ -13,7 +14,7 @@ class TestEnums(unittest.TestCase):
         for k, v in enums.__dict__.items():
             if not k.startswith("__") and not k == "Enum":
                 # Only enums should be in this module.
-                self.assertIsInstance(v, enum.EnumType)
+                self.assertTrue(issubclass(v, enum.Enum))
 
                 # Every enum should have a default value named NONE.
                 self.assertIsNotNone(v["NONE"])

@@ -1,6 +1,7 @@
 """Classes for HCC elements."""
+# pylint: disable=invalid-name, too-few-public-methods
 from collections import namedtuple
-from typing import Self, Optional
+from typing import Optional
 
 from src.enums import ElemId, Color, Direction, Rule, Arg
 
@@ -97,31 +98,31 @@ class ElemBuilder:
         self.args[arg] = val
         return self
 
-    def elemid(self, elemid: ElemId) -> Self:
+    def elemid(self, elemid: ElemId):
         """Set the ElemId field of the builder."""
         return self.__set(Arg.ELEMID, elemid)
 
-    def rule(self, rule: Rule) -> Self:
+    def rule(self, rule: Rule):
         """Set the Rule field of the builder."""
         return self.__set(Arg.RULE, rule)
 
-    def color(self, color: Color) -> Self:
+    def color(self, color: Color):
         """Set the Color field of the builder."""
         return self.__set(Arg.COLOR, color)
 
-    def direction(self, direction: Direction) -> Self:
+    def direction(self, direction: Direction):
         """Set the Direction field of the builder."""
         return self.__set(Arg.DIRECTION, direction)
 
-    def count(self, count: int) -> Self:
+    def count(self, count: int):
         """Set the Count field of the builder."""
         return self.__set(Arg.COUNT, count)
 
-    def index(self, index: int) -> Self:
+    def index(self, index: int):
         """Set the Index field of the builder."""
         return self.__set(Arg.INDEX, index)
 
-    def channel(self, channel: int) -> Self:
+    def channel(self, channel: int):
         """Set the Channel field of the builder."""
         return self.__set(Arg.CHANNEL, channel)
 

@@ -1,8 +1,8 @@
 """Classes for HCC cells."""
 from collections import namedtuple
-from typing import Optional, Self
+from typing import Optional
 
-from src import Elem
+from src.elem import Elem
 from src.enums import Layer, ElemId
 
 # Creates an immutable namedtuple with properties matching everything in the Layer enum.
@@ -35,7 +35,7 @@ class CellBuilder:
             for layer in list(Layer)[1:]:
                 self.args[layer] = getattr(cell, layer.value)
 
-    def add(self, *elems: Elem) -> Self:
+    def add(self, *elems: Elem):
         """Add an element or group of elements to the cell, inferring layers. Elements will be
         overwritten if they share a common layer."""
         by_layer = CellBuilder.ELEMENTS_BY_LAYER
