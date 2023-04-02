@@ -1,4 +1,5 @@
 """Classes for HCC cells."""
+# pylint: disable=no-member, too-few-public-methods, invalid-name
 from collections import namedtuple
 from typing import Optional
 
@@ -12,8 +13,18 @@ Cell = namedtuple(
 )
 
 
+class Cells:
+    """Factories and utilites for Cell class."""
+    def __init__(self):
+        raise RuntimeError(f"Cannot instantiate {self.__class__} class.")
+
+    @staticmethod
+    def of(*elems: Elem) -> Cell:
+        """Returns a cell containing all the elems. Elems sharing a layer will overwrite."""
+        return CellBuilder().add(*elems).build()
+
 class CellBuilder:
-    """Builder class for cell."""
+    """Builder class for Cell."""
     ELEMENTS_BY_LAYER = {
         Layer.TERRAIN: {ElemId.SPACE, ElemId.FLOOR, ElemId.WALL, ElemId.INVISIBLE_WALL,
                         ElemId.MYSTERY_WALL, ElemId.POP_UP_WALL, ElemId.WATER, ElemId.FIRE,

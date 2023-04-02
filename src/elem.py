@@ -14,6 +14,9 @@ Elem = namedtuple(
 
 class Elems:
     """Utilities and factories for Elem objects."""
+    def __init__(self):
+        raise RuntimeError(f"Cannot instantiate {self.__class__} class.")
+
     @staticmethod
     def of(elemid: ElemId, *,
            rule: Rule = Rule.NONE,

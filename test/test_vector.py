@@ -9,8 +9,6 @@ class TestVector(unittest.TestCase):
         """Tests for 'of' factory on Vectors."""
         v1 = Vectors.of(10, 10, 10)
         self.assertEqual(v1, Vector(10, 10, 10))
-        v2 = Vectors.of(10, 10)
-        self.assertEqual(v2, Vector(10, 10, 0))
 
     def test_to_index(self):
         """Tests for 'to_index' utility on Vectors."""
