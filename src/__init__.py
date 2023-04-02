@@ -2,3 +2,4 @@
 from .enums import *
 from .elem import *
 from .cell import *
+from .vector import *
