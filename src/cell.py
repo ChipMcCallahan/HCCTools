@@ -1,75 +1,58 @@
-"""Classes and enums for map cells."""
-# pylint: disable=missing-function-docstring
-# pylint: disable=multiple-statements
-# pylint: disable=missing-class-docstring
-from enum import Enum
-from collections import defaultdict, namedtuple
-from .elem import Elem, ElemBuilder, Id, Direction
+"""Classes for HCC cells."""
+from collections import namedtuple
+from typing import Optional, Self
 
+from src import Elem
+from src.enums import Layer, ElemId
 
-class Layer(Enum):
-    TERRAIN = "terrain"
-    BUTTON = "button"
-    PICKUP = "pickup"
-    MOB = "mob"
-    N = "north"
-    E = "east"
-    S = "south"
-    W = "west"
-
-
+# Creates an immutable namedtuple with properties matching everything in the Layer enum.
 Cell = namedtuple(
     "Cell",
-    tuple(layer.value for layer in Layer)
+    tuple(str(layer.value) for layer in Layer)[1:]
 )
 
 
 class CellBuilder:
     """Builder class for cell."""
     ELEMENTS_BY_LAYER = {
-        Layer.TERRAIN: {Id.SPACE, Id.FLOOR, Id.WALL, Id.INVISIBLE_WALL, Id.MYSTERY_WALL,
-                        Id.POP_UP_WALL, Id.WATER, Id.FIRE, Id.FORCE, Id.ICE, Id.DIRT, Id.GRAVEL,
-                        Id.SOCKET, Id.EXIT, Id.DOOR, Id.THIEF, Id.TOGGLE_WALL, Id.TELEPORT, Id.TRAP,
-                        Id.HINT, Id.CLONER},
-        Layer.BUTTON: {Id.BUTTON},
-        Layer.PICKUP: {Id.KEY, Id.FLIPPERS, Id.FIRE_BOOTS, Id.SKATES, Id.SUCTION_BOOTS, Id.CHIP,
-                       Id.BOMB},
-        Layer.MOB: {Id.BLOCK, Id.ANT, Id.FIREBALL, Id.BALL, Id.TANK, Id.GLIDER, Id.TEETH, Id.WALKER,
-                    Id.BLOB, Id.PARAMECIUM, Id.PLAYER},
-        "sides": {Id.PANEL}
+        Layer.TERRAIN: {ElemId.SPACE, ElemId.FLOOR, ElemId.WALL, ElemId.INVISIBLE_WALL,
+                        ElemId.MYSTERY_WALL, ElemId.POP_UP_WALL, ElemId.WATER, ElemId.FIRE,
+                        ElemId.FORCE, ElemId.ICE, ElemId.DIRT, ElemId.GRAVEL, ElemId.SOCKET,
+                        ElemId.EXIT, ElemId.DOOR, ElemId.THIEF, ElemId.TOGGLE_WALL, ElemId.TELEPORT,
+                        ElemId.TRAP, ElemId.HINT, ElemId.CLONER},
+        Layer.BUTTON: {ElemId.BUTTON},
+        Layer.PICKUP: {ElemId.KEY, ElemId.FLIPPERS, ElemId.FIRE_BOOTS, ElemId.SKATES,
+                       ElemId.SUCTION_BOOTS, ElemId.CHIP, ElemId.BOMB},
+        Layer.MOB: {ElemId.BLOCK, ElemId.ANT, ElemId.FIREBALL, ElemId.BALL, ElemId.TANK,
+                    ElemId.GLIDER, ElemId.TEETH, ElemId.WALKER, ElemId.BLOB, ElemId.PARAMECIUM,
+                    ElemId.PLAYER},
+        "sides": {ElemId.PANEL}
     }
 
-    def __init__(self):
-        self.args = defaultdict(lambda: None)
+    def __init__(self, cell: Optional[Cell] = None):
+        self.args = {layer: None for layer in list(Layer)[1:]}
+        if cell:
+            for layer in list(Layer)[1:]:
+                self.args[layer] = getattr(cell, layer.value)
 
-    def __add(self, t: Elem | ElemBuilder | Id, layer):
-        t = ElemBuilder(t).build() if isinstance(t, Id) else t
-        t = t if isinstance(t, Elem) else t.build()
-        if t.id not in CellBuilder.ELEMENTS_BY_LAYER["sides" if layer.name in "NESW" else layer]:
-            raise ValueError(f"Cannot place {t} in {layer} layer.")
-        self.args[layer] = t
+    def add(self, *elems: Elem) -> Self:
+        """Add an element or group of elements to the cell, inferring layers. Elements will be
+        overwritten if they share a common layer."""
+        by_layer = CellBuilder.ELEMENTS_BY_LAYER
+        for elem in elems:
+            updated = False
+            for layer_key, layer_set in by_layer.items():
+                if not updated and elem.elemid in layer_set:
+                    layer = Layer[elem.direction.name] if layer_key == "sides" else layer_key
+                    self.args[layer] = elem
+                    updated = True
+            if not updated:
+                raise ValueError(f"{elem} could not be mapped to a layer.")
         return self
 
-    def terrain(self, t: Elem | ElemBuilder | Id): return self.__add(t, Layer.TERRAIN)
-
-    def button(self, t: Elem | ElemBuilder | Id): return self.__add(t, Layer.BUTTON)
-
-    def pickup(self, t: Elem | ElemBuilder | Id): return self.__add(t, Layer.PICKUP)
-
-    def mob(self, t: Elem | ElemBuilder | Id): return self.__add(t, Layer.MOB)
-
-    def __sides(self, t: Elem | ElemBuilder | Id, d: Direction): return self.__add(t, Layer[d.name])
-
-    def north(self, t: Elem | ElemBuilder | Id): return self.__sides(t, Direction.N)
-
-    def east(self, t: Elem | ElemBuilder | Id): return self.__sides(t, Direction.E)
-
-    def south(self, t: Elem | ElemBuilder | Id): return self.__sides(t, Direction.S)
-
-    def west(self, t: Elem | ElemBuilder | Id): return self.__sides(t, Direction.W)
-
-    def build(self):
+    def build(self) -> Cell:
+        """Build the immutable Cell object."""
         ordered_args = []
-        for layer in Layer:
+        for layer in list(Layer)[1:]:
             ordered_args.append(self.args[layer])
         return Cell(*ordered_args)
