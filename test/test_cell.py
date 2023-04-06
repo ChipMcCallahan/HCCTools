@@ -1,13 +1,13 @@
 """Tests for Cell."""
-# pylint: disable=no-member
+# pylint: disable=no-member,invalid-name
 import unittest
 from src.cell import Cells,CellBuilder, Layer
-from src.elem import Elems, ElemId
+from src.elem import Elem
+from src.enums import ElemId
 
 
 class TestCellBuilder(unittest.TestCase):
     """Tests for CellBuilder"""
-
     def test_all_ids_assigned_to_layer(self):
         """Test that every ElemId is assigned to exactly one layer."""
         terrain = CellBuilder.ELEMENTS_BY_LAYER[Layer.TERRAIN]
@@ -22,9 +22,9 @@ class TestCellBuilder(unittest.TestCase):
 
     def test_build(self):
         """Test build method of CellBuilder class."""
-        cell = CellBuilder().add(Elems.floor(), Elems.button(), Elems.chip(), Elems.ball(),
-                                 Elems.panel_n(), Elems.panel_e(),
-                                 Elems.panel_s(), Elems.panel_w()).build()
+        new = Elem.new()
+        cell = CellBuilder().add(new.floor(), new.button(), new.chip(), new.ball(),
+                                 new.panel_n(), new.panel_e(), new.panel_s(), new.panel_w()).build()
         self.assertEqual(cell.terrain.elemid, ElemId.FLOOR)
         self.assertEqual(cell.button.elemid, ElemId.BUTTON)
         self.assertEqual(cell.pickup.elemid, ElemId.CHIP)
@@ -39,9 +39,10 @@ class TestCells(unittest.TestCase):
     """Tests for the Cells class."""
     def test_factories(self):
         """Test factory methods of the Cells class."""
-        cell = Cells.of(Elems.floor(), Elems.button(), Elems.chip(), Elems.ball(),
-                                 Elems.panel_n(), Elems.panel_e(),
-                                 Elems.panel_s(), Elems.panel_w())
+        e = Elem.new()
+        cell = Cells.of(e.floor(), e.button(), e.chip(), e.ball(),
+                        e.panel_n(), e.panel_e(),
+                        e.panel_s(), e.panel_w())
         self.assertEqual(cell.terrain.elemid, ElemId.FLOOR)
         self.assertEqual(cell.button.elemid, ElemId.BUTTON)
         self.assertEqual(cell.pickup.elemid, ElemId.CHIP)

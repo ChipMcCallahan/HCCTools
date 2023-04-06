@@ -1,6 +1,6 @@
 """Level class for HCC"""
 # pylint: disable=too-few-public-methods, invalid-name, no-member
-from src.elem import Elems
+from src.elem import Elem
 from src.cell import Cell, Cells
 from src.vector import Vector, Vectors
 
@@ -10,7 +10,7 @@ class Level:
         self.size = size
         self.name = "Untitled"
         self.author = "Anonymous"
-        self.map = [Cells.of(Elems.floor())] * size.x * size.y * size.z
+        self.map = [Cells.of(Elem.new().floor())] * size.x * size.y * size.z
 
     def __to_index(self, pos: int | Vector) -> int:
         return pos if isinstance(pos, int) else Vectors.to_index(pos, self.size)

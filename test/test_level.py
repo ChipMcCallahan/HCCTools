@@ -2,7 +2,7 @@
 # pylint: disable=invalid-name,no-member
 import unittest
 from src.cell import Cells
-from src.elem import Elems
+from src.elem import Elem
 from src.level import Level
 from src.vector import Vectors
 
@@ -16,8 +16,9 @@ class TestLevel(unittest.TestCase):
     def test_at(self):
         """Tests for the Level 'at' method."""  
         level = Level(Vectors.of(10, 10, 1))
-        self.assertEqual(level.at(Vectors.of(0, 0, 0)), Cells.of(Elems.floor()))
-        self.assertEqual(level.at(Vectors.of(9, 9, 0)), Cells.of(Elems.floor()))
+        new = Elem.new()
+        self.assertEqual(level.at(Vectors.of(0, 0, 0)), Cells.of(new.floor()))
+        self.assertEqual(level.at(Vectors.of(9, 9, 0)), Cells.of(new.floor()))
 
         # x out of bounds
         with self.assertRaises(ValueError):

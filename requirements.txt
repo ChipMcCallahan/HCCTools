@@ -1,4 +1,5 @@
 ###### Requirements without Version Specifiers ######`
 cc_tools@git+https://github.com/ChipMcCallahan/CCTools.git
+cc_tools@git+https://github.com/ChipMcCallahan/Versatuple.git
 
 ###### Requirements with Version Specifiers ######`
