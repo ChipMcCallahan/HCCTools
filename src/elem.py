@@ -21,12 +21,12 @@ Elem = versatuple(
         "index": lambda index: isinstance(index, int) and index >= 0
     },
     shortcuts={
-        "elemid": tuple((elemid.value, elemid) for elemid in list(ElemId)[1:]),
         "direction": tuple((d.value, d) for d in list(Direction)[1:]),
         "color": tuple((color.value, color) for color in list(Color)[1:]),
         "rule": tuple((rule.value, rule) for rule in list(Rule)[1:]),
     },
-    factories={f"{color.value}_key": {"elemid": ElemId.KEY, "color": color}
+    factories={elemid.value: {"elemid": elemid} for elemid in list(ElemId)[1:]} | \
+              {f"{color.value}_key": {"elemid": ElemId.KEY, "color": color}
                for color in list(Color)[1:]} | \
               {f"{color.value}_door": {"elemid": ElemId.DOOR, "color": color}
                for color in list(Color)[1:]} | \
